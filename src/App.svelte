@@ -1,263 +1,156 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <title>Visualización de Gastos - Fines de Semana</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f0f9ff;
-      color: #333;
-      padding: 20px;
+
+<script>
+  import './app.css';
+  import { onMount } from 'svelte';
+
+  let nombre = "";
+  let edad = "";
+  let genero = "Hombre";
+  let viveSolo = "Sí";
+  let amigos = 0;
+  let pareja = 0;
+  let deporte = 0;
+  let familia = 0;
+  let estudiar = 0;
+  let otra = 0;
+
+  let datos = [];
+
+  const iconos = {
+    amigos: "🧑‍🤝‍🧑",
+    pareja: "❤️",
+    deporte: "🏃‍♂️",
+    familia: "👨‍👩‍👧‍👦",
+    estudiar: "📚",
+    otra: "✨"
+  };
+
+  onMount(() => {
+    const guardado = localStorage.getItem("gastos");
+    if (guardado) {
+      datos = JSON.parse(guardado);
+    }
+  });
+
+  function agregarGasto() {
+    const cantidades = { amigos, pareja, deporte, familia, estudiar, otra };
+    const total = amigos * 3 + pareja * 8 + deporte * 2 + familia * 5 + estudiar * 10 + otra * 6;
+
+    if (total !== 45) {
+      alert(`Debés gastar exactamente 45 pesos. Estás gastando ${total}.`);
+      return;
     }
 
-    h1, h2 {
-      text-align: center;
-      color: #336699;
+    let gastoVisual = "";
+    for (let key in cantidades) {
+      gastoVisual += iconos[key].repeat(cantidades[key]);
     }
 
-    .formulario, .tabla {
-      max-width: 800px;
-      margin: auto;
-      background-color: #ffffff;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      margin-bottom: 40px;
+    const nuevoDato = {
+      nombre,
+      edad: parseInt(edad),
+      genero,
+      viveSolo,
+      gastoVisual
+    };
+
+    datos = [...datos, nuevoDato];
+    localStorage.setItem("gastos", JSON.stringify(datos));
+
+    // Limpiar formulario
+    nombre = "";
+    edad = "";
+    genero = "Hombre";
+    viveSolo = "Sí";
+    amigos = pareja = deporte = familia = estudiar = otra = 0;
+  }
+
+  function borrarDatos() {
+    if (confirm("¿Estás seguro de que querés borrar todos los datos?")) {
+      localStorage.removeItem("gastos");
+      datos = [];
     }
+  }
+</script>
 
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
+<h1 style="text-align:center; color:#336699">¿En qué gastás tu fin de semana?</h1>
 
-    input, select, textarea {
-      width: 100%;
-      padding: 8px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      margin-top: 5px;
-    }
+<div class="categorias">
+  <h2 style="text-align:center;">Categorías disponibles (y su costo)</h2>
+  <span>🧑‍🤝‍🧑 Amigos - 3 pesos</span>
+  <span>❤️ Pareja - 8 pesos</span>
+  <span>🏃‍♂️ Deporte - 2 pesos</span>
+  <span>👨‍👩‍👧‍👦 Familia - 5 pesos</span>
+  <span>📚 Estudiar - 10 pesos</span>
+  <span>✨ Otra - 6 pesos</span>
+</div>
 
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      border: none;
-      background-color: #6ec1e4;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+<div class="formulario">
+  <h2>Completá tu información</h2>
 
-    button:hover {
-      background-color: #4da3c7;
-    }
+  <label>Nombre:</label>
+  <input bind:value={nombre} required>
 
-    .categorias {
-      margin: 20px auto;
-      max-width: 800px;
-      background-color: #e6f2ff;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-    }
+  <label>Edad:</label>
+  <input type="number" bind:value={edad} required>
 
-    .categorias span {
-      display: inline-block;
-      margin: 10px;
-      padding: 10px;
-      background-color: #d9ecff;
-      border-radius: 8px;
-    }
+  <label>Género:</label>
+  <select bind:value={genero}>
+    <option value="Hombre">Hombre</option>
+    <option value="Mujer">Mujer</option>
+    <option value="Otro">Otro</option>
+  </select>
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+  <label>¿Vivís solo/a?</label>
+  <select bind:value={viveSolo}>
+    <option value="Sí">Sí</option>
+    <option value="No">No</option>
+  </select>
 
-    th, td {
-      border: 1px solid #ccc;
-      padding: 10px;
-    }
+  <label>🧑‍🤝‍🧑 Amigos</label>
+  <input type="number" bind:value={amigos} min="0">
 
-    th {
-      background-color: #cce5ff;
-    }
+  <label>❤️ Pareja</label>
+  <input type="number" bind:value={pareja} min="0">
 
-    .nombre {
-      font-family: 'Courier New', monospace;
-    }
+  <label>🏃‍♂️ Deporte</label>
+  <input type="number" bind:value={deporte} min="0">
 
-    .edad-adulto {
-      font-weight: bold;
-    }
+  <label>👨‍👩‍👧‍👦 Familia</label>
+  <input type="number" bind:value={familia} min="0">
 
-    .vive-solo-si {
-      color: green;
-    }
+  <label>📚 Estudiar</label>
+  <input type="number" bind:value={estudiar} min="0">
 
-    .vive-solo-no {
-      color: red;
-    }
+  <label>✨ Otra</label>
+  <input type="number" bind:value={otra} min="0">
 
-    .genero-hombre {
-      color: lightblue;
-    }
+  <button on:click={agregarGasto}>Agregar a la tabla</button>
+  <button class="borrar" on:click={borrarDatos}>Borrar todos los datos</button>
+</div>
 
-    .genero-mujer {
-      color: deeppink;
-    }
-  </style>
-</head>
-<body>
-
-  <h1>¿En qué gastás tu fin de semana?</h1>
-
-  <div class="categorias">
-    <h2>Categorías disponibles (y su costo)</h2>
-    <span>🧑‍🤝‍🧑 Amigos - 3 pesos</span>
-    <span>❤️ Pareja - 8 pesos</span>
-    <span>🏃‍♂️ Deporte - 2 pesos</span>
-    <span>👨‍👩‍👧‍👦 Familia - 5 pesos</span>
-    <span>📚 Estudiar - 10 pesos</span>
-    <span>✨ Otra - 6 pesos</span>
-  </div>
-
-  <div class="formulario">
-    <h2>Completá tu información</h2>
-    <form id="gastoForm">
-      <label>Nombre:</label>
-      <input type="text" id="nombre" required>
-
-      <label>Edad:</label>
-      <input type="number" id="edad" required>
-
-      <label>Género:</label>
-      <select id="genero" required>
-        <option value="Hombre">Hombre</option>
-        <option value="Mujer">Mujer</option>
-        <option value="Otro">Otro</option>
-      </select>
-
-      <label>¿Vivís solo/a?</label>
-      <select id="viveSolo" required>
-        <option value="Sí">Sí</option>
-        <option value="No">No</option>
-      </select>
-
-      <label>¿Cuántas veces gastarías en cada categoría?</label>
-      <input type="number" placeholder="Salidas con amigos" id="amigos" value="0">
-      <input type="number" placeholder="Juntadas con pareja" id="pareja" value="0">
-      <input type="number" placeholder="Deporte" id="deporte" value="0">
-      <input type="number" placeholder="Tiempo en familia" id="familia" value="0">
-      <input type="number" placeholder="Estudiar" id="estudiar" value="0">
-      <input type="number" placeholder="Otra categoría (opcional)" id="otra" value="0">
-
-      <button type="submit">Agregar a la tabla</button>
-    </form>
-  </div>
-
-  <div class="tabla">
-    <h2>Gastos de los participantes</h2>
-    <table id="tablaRes">
-      <thead>
+<div class="tabla">
+  <h2>Gastos de los participantes</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Edad</th>
+        <th>Género</th>
+        <th>Vive solo</th>
+        <th>Distribución visual de gastos</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each datos as d}
         <tr>
-          <th>Nombre</th>
-          <th>Edad</th>
-          <th>Género</th>
-          <th>Vive solo</th>
-          <th>Distribución visual de gastos</th>
+          <td class={`tipografia ${d.genero === 'Hombre' ? 'genero-hombre' : d.genero === 'Mujer' ? 'genero-mujer' : ''}`}>{d.nombre}</td>
+          <td class={d.edad >= 18 ? 'mayor' : ''}>{d.edad}</td>
+          <td class={d.genero === 'Hombre' ? 'genero-hombre' : d.genero === 'Mujer' ? 'genero-mujer' : ''}>{d.genero}</td>
+          <td class={d.viveSolo === 'Sí' ? 'vive-solo' : 'vive-no'}>{d.viveSolo}</td>
+          <td>{d.gastoVisual}</td>
         </tr>
-      </thead>
-      <tbody>
-        <!-- Filas dinámicas -->
-      </tbody>
-    </table>
-  </div>
-
-  <script>
-    const form = document.getElementById('gastoForm');
-    const tabla = document.getElementById('tablaRes').querySelector('tbody');
-
-    function guardarDatos(datos) {
-      const almacenados = JSON.parse(localStorage.getItem('gastos')) || [];
-      almacenados.push(datos);
-      localStorage.setItem('gastos', JSON.stringify(almacenados));
-    }
-
-    function cargarDatos() {
-      const almacenados = JSON.parse(localStorage.getItem('gastos')) || [];
-      almacenados.forEach(d => agregarFila(d));
-    }
-
-    function agregarFila(data) {
-      const fila = document.createElement('tr');
-
-      const nombreEstilo = `<span class="nombre">${data.nombre}</span>`;
-      const edadEstilo = `<span class="${data.edad >= 18 ? 'edad-adulto' : ''}">${data.edad}</span>`;
-      const generoEstilo = `<span class="${data.genero === 'Mujer' ? 'genero-mujer' : data.genero === 'Hombre' ? 'genero-hombre' : ''}">${data.genero}</span>`;
-      const viveSoloEstilo = `<span class="${data.viveSolo === 'Sí' ? 'vive-solo-si' : 'vive-solo-no'}">${data.viveSolo}</span>`;
-
-      fila.innerHTML = `
-        <td>${nombreEstilo}</td>
-        <td>${edadEstilo}</td>
-        <td>${generoEstilo}</td>
-        <td>${viveSoloEstilo}</td>
-        <td>${data.gastoVisual}</td>
-      `;
-      tabla.appendChild(fila);
-    }
-
-    form.addEventListener('submit', function (e) {
-      e.preventDefault();
-
-      const nombre = document.getElementById('nombre').value;
-      const edad = parseInt(document.getElementById('edad').value);
-      const genero = document.getElementById('genero').value;
-      const viveSolo = document.getElementById('viveSolo').value;
-
-      const cantidades = {
-        amigos: parseInt(document.getElementById('amigos').value) || 0,
-        pareja: parseInt(document.getElementById('pareja').value) || 0,
-        deporte: parseInt(document.getElementById('deporte').value) || 0,
-        familia: parseInt(document.getElementById('familia').value) || 0,
-        estudiar: parseInt(document.getElementById('estudiar').value) || 0,
-        otra: parseInt(document.getElementById('otra').value) || 0
-      };
-
-      const total = cantidades.amigos * 3 + cantidades.pareja * 8 + cantidades.deporte * 2 +
-                    cantidades.familia * 5 + cantidades.estudiar * 10 + cantidades.otra * 6;
-
-      if (total !== 45) {
-        alert("Debés gastar exactamente 45 pesos. Ahora estás gastando " + total + " pesos.");
-        return;
-      }
-
-      const iconos = {
-        amigos: "🧑‍🤝‍🧑",
-        pareja: "❤️",
-        deporte: "🏃‍♂️",
-        familia: "👨‍👩‍👧‍👦",
-        estudiar: "📚",
-        otra: "✨"
-      };
-
-      let gastoVisual = "";
-      for (let categoria in cantidades) {
-        gastoVisual += iconos[categoria].repeat(cantidades[categoria]);
-      }
-
-      const datos = {
-        nombre, edad, genero, viveSolo, gastoVisual
-      };
-
-      guardarDatos(datos);
-      agregarFila(datos);
-      form.reset();
-    });
-
-    window.onload = cargarDatos;
-  </script>
-</body>
-</html>
+      {/each}
+    </tbody>
+  </table>
+</div>
