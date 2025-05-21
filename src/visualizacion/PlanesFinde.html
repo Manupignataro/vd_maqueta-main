@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualización de Gastos - Fines de Semana</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f9ff;
+      color: #333;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+      color: #336699;
+    }
+
+    .formulario, .tabla {
+      max-width: 800px;
+      margin: auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      margin-top: 5px;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background-color: #6ec1e4;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #4da3c7;
+    }
+
+    .categorias {
+      margin: 20px auto;
+      max-width: 800px;
+      background-color: #e6f2ff;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .categorias span {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px;
+      background-color: #d9ecff;
+      border-radius: 8px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #cce5ff;
+    }
+
+    .nombre {
+      font-family: 'Courier New', monospace;
+    }
+
+    .edad-adulto {
+      font-weight: bold;
+    }
+
+    .vive-solo-si {
+      color: green;
+    }
+
+    .vive-solo-no {
+      color: red;
+    }
+
+    .genero-hombre {
+      color: lightblue;
+    }
+
+    .genero-mujer {
+      color: deeppink;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>¿En qué gastás tu fin de semana?</h1>
+
+  <div class="categorias">
+    <h2>Categorías disponibles (y su costo)</h2>
+    <span>🧑‍🤝‍🧑 Amigos - 3 pesos</span>
+    <span>❤️ Pareja - 8 pesos</span>
+    <span>🏃‍♂️ Deporte - 2 pesos</span>
+    <span>👨‍👩‍👧‍👦 Familia - 5 pesos</span>
+    <span>📚 Estudiar - 10 pesos</span>
+    <span>✨ Otra - 6 pesos</span>
+  </div>
+
+  <div class="formulario">
+    <h2>Completá tu información</h2>
+    <form id="gastoForm">
+      <label>Nombre:</label>
+      <input type="text" id="nombre" required>
+
+      <label>Edad:</label>
+      <input type="number" id="edad" required>
+
+      <label>Género:</label>
+      <select id="genero" required>
+        <option value="Hombre">Hombre</option>
+        <option value="Mujer">Mujer</option>
+        <option value="Otro">Otro</option>
+      </select>
+
+      <label>¿Vivís solo/a?</label>
+      <select id="viveSolo" required>
+        <option value="Sí">Sí</option>
+        <option value="No">No</option>
+      </select>
+
+      <label>¿Cuántas veces gastarías en cada categoría?</label>
+      <input type="number" placeholder="Salidas con amigos" id="amigos" value="0">
+      <input type="number" placeholder="Juntadas con pareja" id="pareja" value="0">
+      <input type="number" placeholder="Deporte" id="deporte" value="0">
+      <input type="number" placeholder="Tiempo en familia" id="familia" value="0">
+      <input type="number" placeholder="Estudiar" id="estudiar" value="0">
+      <input type="number" placeholder="Otra categoría (opcional)" id="otra" value="0">
+
+      <button type="submit">Agregar a la tabla</button>
+    </form>
+  </div>
+
+  <div class="tabla">
+    <h2>Gastos de los participantes</h2>
+    <table id="tablaRes">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Edad</th>
+          <th>Género</th>
+          <th>Vive solo</th>
+          <th>Distribución visual de gastos</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Filas dinámicas -->
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    const form = document.getElementById('gastoForm');
+    const tabla = document.getElementById('tablaRes').querySelector('tbody');
+
+    function guardarDatos(datos) {
+      const almacenados = JSON.parse(localStorage.getItem('gastos')) || [];
+      almacenados.push(datos);
+      localStorage.setItem('gastos', JSON.stringify(almacenados));
+    }
+
+    function cargarDatos() {
+      const almacenados = JSON.parse(localStorage.getItem('gastos')) || [];
+      almacenados.forEach(d => agregarFila(d));
+    }
+
+    function agregarFila(data) {
+      const fila = document.createElement('tr');
+
+      const nombreEstilo = `<span class="nombre">${data.nombre}</span>`;
+      const edadEstilo = `<span class="${data.edad >= 18 ? 'edad-adulto' : ''}">${data.edad}</span>`;
+      const generoEstilo = `<span class="${data.genero === 'Mujer' ? 'genero-mujer' : data.genero === 'Hombre' ? 'genero-hombre' : ''}">${data.genero}</span>`;
+      const viveSoloEstilo = `<span class="${data.viveSolo === 'Sí' ? 'vive-solo-si' : 'vive-solo-no'}">${data.viveSolo}</span>`;
+
+      fila.innerHTML = `
+        <td>${nombreEstilo}</td>
+        <td>${edadEstilo}</td>
+        <td>${generoEstilo}</td>
+        <td>${viveSoloEstilo}</td>
+        <td>${data.gastoVisual}</td>
+      `;
+      tabla.appendChild(fila);
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const nombre = document.getElementById('nombre').value;
+      const edad = parseInt(document.getElementById('edad').value);
+      const genero = document.getElementById('genero').value;
+      const viveSolo = document.getElementById('viveSolo').value;
+
+      const cantidades = {
+        amigos: parseInt(document.getElementById('amigos').value) || 0,
+        pareja: parseInt(document.getElementById('pareja').value) || 0,
+        deporte: parseInt(document.getElementById('deporte').value) || 0,
+        familia: parseInt(document.getElementById('familia').value) || 0,
+        estudiar: parseInt(document.getElementById('estudiar').value) || 0,
+        otra: parseInt(document.getElementById('otra').value) || 0
+      };
+
+      const total = cantidades.amigos * 3 + cantidades.pareja * 8 + cantidades.deporte * 2 +
+                    cantidades.familia * 5 + cantidades.estudiar * 10 + cantidades.otra * 6;
+
+      if (total !== 45) {
+        alert("Debés gastar exactamente 45 pesos. Ahora estás gastando " + total + " pesos.");
+        return;
+      }
+
+      const iconos = {
+        amigos: "🧑‍🤝‍🧑",
+        pareja: "❤️",
+        deporte: "🏃‍♂️",
+        familia: "👨‍👩‍👧‍👦",
+        estudiar: "📚",
+        otra: "✨"
+      };
+
+      let gastoVisual = "";
+      for (let categoria in cantidades) {
+        gastoVisual += iconos[categoria].repeat(cantidades[categoria]);
+      }
+
+      const datos = {
+        nombre, edad, genero, viveSolo, gastoVisual
+      };
+
+      guardarDatos(datos);
+      agregarFila(datos);
+      form.reset();
+    });
+
+    window.onload = cargarDatos;
+  </script>
+</body>
+</html>
