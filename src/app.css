@@ -2,7 +2,7 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
-.formulario, .tabla, .categorias {
+.formulario, .tabla {
   max-width: 800px;
   margin: auto;
   background-color: #ffffff;
@@ -40,9 +40,14 @@ button:hover {
   background-color: #4da3c7;
 }
 
+.categorias {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
 .categorias span {
   display: inline-block;
-  margin: 10px;
+  margin: 5px;
   padding: 10px;
   background-color: #d9ecff;
   border-radius: 8px;
@@ -90,4 +95,11 @@ th {
 .borrar {
   background-color: red;
   margin-top: 20px;
+}
+
+.contador {
+  font-size: 1.1em;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #336699;
 }

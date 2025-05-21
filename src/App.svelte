@@ -23,6 +23,19 @@
     otra: "✨"
   };
 
+  const precios = {
+    amigos: 3,
+    pareja: 8,
+    deporte: 2,
+    familia: 5,
+    estudiar: 10,
+    otra: 6
+  };
+
+  // Contador de monedas actualizadas automáticamente
+  $: totalGastado = amigos * precios.amigos + pareja * precios.pareja + deporte * precios.deporte +
+                    familia * precios.familia + estudiar * precios.estudiar + otra * precios.otra;
+
   onMount(() => {
     const guardado = localStorage.getItem("gastos");
     if (guardado) {
@@ -31,17 +44,14 @@
   });
 
   function agregarGasto() {
-    const cantidades = { amigos, pareja, deporte, familia, estudiar, otra };
-    const total = amigos * 3 + pareja * 8 + deporte * 2 + familia * 5 + estudiar * 10 + otra * 6;
-
-    if (total !== 45) {
-      alert(`Debés gastar exactamente 45 pesos. Estás gastando ${total}.`);
+    if (totalGastado !== 45) {
+      alert(`Debés gastar exactamente 45 pesos. Estás gastando ${totalGastado}.`);
       return;
     }
 
     let gastoVisual = "";
-    for (let key in cantidades) {
-      gastoVisual += iconos[key].repeat(cantidades[key]);
+    for (let key in precios) {
+      gastoVisual += iconos[key].repeat(eval(key));
     }
 
     const nuevoDato = {
@@ -69,19 +79,15 @@
       datos = [];
     }
   }
+
+  function generoIcono(g) {
+    if (g === "Hombre") return "🚹";
+    if (g === "Mujer") return "🚺";
+    return "⚧️";
+  }
 </script>
 
 <h1 style="text-align:center; color:#336699">¿En qué gastás tu fin de semana?</h1>
-
-<div class="categorias">
-  <h2 style="text-align:center;">Categorías disponibles (y su costo)</h2>
-  <span>🧑‍🤝‍🧑 Amigos - 3 pesos</span>
-  <span>❤️ Pareja - 8 pesos</span>
-  <span>🏃‍♂️ Deporte - 2 pesos</span>
-  <span>👨‍👩‍👧‍👦 Familia - 5 pesos</span>
-  <span>📚 Estudiar - 10 pesos</span>
-  <span>✨ Otra - 6 pesos</span>
-</div>
 
 <div class="formulario">
   <h2>Completá tu información</h2>
@@ -105,6 +111,17 @@
     <option value="No">No</option>
   </select>
 
+  <div class="categorias">
+    <h3>Categorías disponibles (y su costo)</h3>
+    <span>🧑‍🤝‍🧑 Amigos - 3 pesos</span>
+    <span>❤️ Pareja - 8 pesos</span>
+    <span>🏃‍♂️ Deporte - 2 pesos</span>
+    <span>👨‍👩‍👧‍👦 Familia - 5 pesos</span>
+    <span>📚 Estudiar - 10 pesos</span>
+    <span>✨ Otra - 6 pesos</span>
+  </div>
+
+  <h3>¿Cuántas veces gastarías en cada categoría?</h3>
   <label>🧑‍🤝‍🧑 Amigos</label>
   <input type="number" bind:value={amigos} min="0">
 
@@ -122,6 +139,8 @@
 
   <label>✨ Otra</label>
   <input type="number" bind:value={otra} min="0">
+
+  <p class="contador">💰 Monedas gastadas: <strong>{totalGastado}</strong> / 45</p>
 
   <button on:click={agregarGasto}>Agregar a la tabla</button>
   <button class="borrar" on:click={borrarDatos}>Borrar todos los datos</button>
@@ -144,8 +163,8 @@
         <tr>
           <td class={`tipografia ${d.genero === 'Hombre' ? 'genero-hombre' : d.genero === 'Mujer' ? 'genero-mujer' : ''}`}>{d.nombre}</td>
           <td class={d.edad >= 18 ? 'mayor' : ''}>{d.edad}</td>
-          <td class={d.genero === 'Hombre' ? 'genero-hombre' : d.genero === 'Mujer' ? 'genero-mujer' : ''}>{d.genero}</td>
-          <td class={d.viveSolo === 'Sí' ? 'vive-solo' : 'vive-no'}>{d.viveSolo}</td>
+          <td>{generoIcono(d.genero)}</td>
+          <td>{d.viveSolo === 'Sí' ? '✔️' : '❌'}</td>
           <td>{d.gastoVisual}</td>
         </tr>
       {/each}
