@@ -1,93 +1,65 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
+h1 {
+  text-align: center;
+  color: #333;
 }
 
-.formulario, .tabla, .categorias {
-  max-width: 800px;
-  margin: auto;
-  background-color: #ffffff;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-bottom: 40px;
+.formulario {
+  margin: 20px auto;
+  max-width: 500px;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
+.categorias {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 10px;
+  margin-bottom: 10px;
+  font-size: 1rem;
 }
 
-input, select {
-  width: 100%;
-  padding: 8px;
-  border-radius: 5px;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+input, select, button {
+  padding: 0.5rem;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  margin-top: 5px;
 }
 
 button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border: none;
-  background-color: #6ec1e4;
-  color: white;
-  border-radius: 5px;
   cursor: pointer;
+  background-color: #007BFF;
+  color: white;
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
 }
 
 button:hover {
-  background-color: #4da3c7;
+  background-color: #0056b3;
 }
 
-.categorias span {
-  display: inline-block;
-  margin: 10px;
-  padding: 10px;
-  background-color: #d9ecff;
-  border-radius: 8px;
+.tabla {
+  margin: 20px auto;
+  max-width: 800px;
+  overflow-x: auto;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 th, td {
-  border: 1px solid #ccc;
-  padding: 10px;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
   text-align: center;
-}
-
-th {
-  background-color: #cce5ff;
-}
-
-.mayor {
-  font-weight: bold;
-}
-
-.vive-solo {
-  background-color: #d4f9d4;
-}
-
-.vive-no {
-  background-color: #f9d4d4;
-}
-
-.genero-hombre {
-  background-color: #ffdddd;
-}
-
-.genero-mujer {
-  background-color: #ffe0f0;
-}
-
-.tipografia {
-  font-family: 'Courier New', Courier, monospace;
-}
-
-.borrar {
-  background-color: red;
-  margin-top: 20px;
 }
