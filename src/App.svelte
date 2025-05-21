@@ -1,9 +1,10 @@
 <script>
   import { onMount } from 'svelte';
-  let nombre = '';
-  let edad = '';
-  let genero = 'Hombre';
-  let viveSolo = 'Sí';
+
+  let nombre = "";
+  let edad = "";
+  let genero = "Hombre";
+  let viveSolo = "Sí";
   let amigos = 0;
   let pareja = 0;
   let deporte = 0;
@@ -11,7 +12,7 @@
   let estudiar = 0;
   let otra = 0;
 
-  let gastos = [];
+  let datos = [];
 
   const iconos = {
     amigos: "🧑‍🤝‍🧑",
@@ -23,29 +24,27 @@
   };
 
   onMount(() => {
-    const data = localStorage.getItem('gastos');
-    if (data) {
-      gastos = JSON.parse(data);
+    const guardado = localStorage.getItem("gastos");
+    if (guardado) {
+      datos = JSON.parse(guardado);
     }
   });
 
   function agregarGasto() {
     const cantidades = { amigos, pareja, deporte, familia, estudiar, otra };
-
-    const total = amigos * 3 + pareja * 8 + deporte * 2 +
-                  familia * 5 + estudiar * 10 + otra * 6;
+    const total = amigos * 3 + pareja * 8 + deporte * 2 + familia * 5 + estudiar * 10 + otra * 6;
 
     if (total !== 45) {
-      alert(`Debés gastar exactamente 45 pesos. Estás gastando ${total} pesos.`);
+      alert(`Debés gastar exactamente 45 pesos. Estás gastando ${total}.`);
       return;
     }
 
     let gastoVisual = "";
-    for (let categoria in cantidades) {
-      gastoVisual += iconos[categoria].repeat(cantidades[categoria]);
+    for (let key in cantidades) {
+      gastoVisual += iconos[key].repeat(cantidades[key]);
     }
 
-    const nuevo = {
+    const nuevoDato = {
       nombre,
       edad: parseInt(edad),
       genero,
@@ -53,76 +52,83 @@
       gastoVisual
     };
 
-    gastos = [...gastos, nuevo];
-    localStorage.setItem('gastos', JSON.stringify(gastos));
+    datos = [...datos, nuevoDato];
+    localStorage.setItem("gastos", JSON.stringify(datos));
 
-    nombre = '';
-    edad = '';
-    genero = 'Hombre';
-    viveSolo = 'Sí';
+    // Limpiar formulario
+    nombre = "";
+    edad = "";
+    genero = "Hombre";
+    viveSolo = "Sí";
     amigos = pareja = deporte = familia = estudiar = otra = 0;
   }
 
   function borrarDatos() {
-    localStorage.removeItem('gastos');
-    gastos = [];
-  }
-
-  function getNombreStyle(nombre) {
-    return `font-family: 'Courier New', monospace;`;
-  }
-
-  function getEdadStyle(edad) {
-    return edad >= 18 ? 'font-weight: bold;' : '';
-  }
-
-  function getGeneroStyle(genero) {
-    return `background-color: ${genero === 'Mujer' ? 'pink' : genero === 'Hombre' ? 'red' : 'lightgray'};`;
-  }
-
-  function getViveSoloStyle(vive) {
-    return `color: ${vive === 'Sí' ? 'green' : 'red'}; font-weight: bold;`;
+    if (confirm("¿Estás seguro de que querés borrar todos los datos?")) {
+      localStorage.removeItem("gastos");
+      datos = [];
+    }
   }
 </script>
 
-<h1>¿En qué querés gastar tu balance (monedas)?</h1>
+<h1 style="text-align:center; color:#336699">¿En qué gastás tu fin de semana?</h1>
+
+<div class="categorias">
+  <h2 style="text-align:center;">Categorías disponibles (y su costo)</h2>
+  <span>🧑‍🤝‍🧑 Amigos - 3 pesos</span>
+  <span>❤️ Pareja - 8 pesos</span>
+  <span>🏃‍♂️ Deporte - 2 pesos</span>
+  <span>👨‍👩‍👧‍👦 Familia - 5 pesos</span>
+  <span>📚 Estudiar - 10 pesos</span>
+  <span>✨ Otra - 6 pesos</span>
+</div>
 
 <div class="formulario">
-  <div class="categorias">
-    <span>🧑‍🤝‍🧑 Amigos - 3 pesos</span>
-    <span>❤️ Pareja - 8 pesos</span>
-    <span>🏃‍♂️ Deporte - 2 pesos</span>
-    <span>👨‍👩‍👧‍👦 Familia - 5 pesos</span>
-    <span>📚 Estudiar - 10 pesos</span>
-    <span>✨ Otra - 6 pesos</span>
-  </div>
+  <h2>Completá tu información</h2>
 
-  <form on:submit|preventDefault={agregarGasto}>
-    <input type="text" placeholder="Nombre" bind:value={nombre} required />
-    <input type="number" placeholder="Edad" bind:value={edad} required />
-    <select bind:value={genero}>
-      <option>Hombre</option>
-      <option>Mujer</option>
-      <option>Otro</option>
-    </select>
-    <select bind:value={viveSolo}>
-      <option>Sí</option>
-      <option>No</option>
-    </select>
+  <label>Nombre:</label>
+  <input bind:value={nombre} required>
 
-    <input type="number" placeholder="Salidas con amigos" bind:value={amigos} />
-    <input type="number" placeholder="Juntadas con pareja" bind:value={pareja} />
-    <input type="number" placeholder="Deporte" bind:value={deporte} />
-    <input type="number" placeholder="Tiempo en familia" bind:value={familia} />
-    <input type="number" placeholder="Estudiar" bind:value={estudiar} />
-    <input type="number" placeholder="Otra categoría (opcional)" bind:value={otra} />
+  <label>Edad:</label>
+  <input type="number" bind:value={edad} required>
 
-    <button type="submit">Agregar</button>
-    <button type="button" on:click={borrarDatos}>Borrar base de datos</button>
-  </form>
+  <label>Género:</label>
+  <select bind:value={genero}>
+    <option value="Hombre">Hombre</option>
+    <option value="Mujer">Mujer</option>
+    <option value="Otro">Otro</option>
+  </select>
+
+  <label>¿Vivís solo/a?</label>
+  <select bind:value={viveSolo}>
+    <option value="Sí">Sí</option>
+    <option value="No">No</option>
+  </select>
+
+  <label>🧑‍🤝‍🧑 Amigos</label>
+  <input type="number" bind:value={amigos} min="0">
+
+  <label>❤️ Pareja</label>
+  <input type="number" bind:value={pareja} min="0">
+
+  <label>🏃‍♂️ Deporte</label>
+  <input type="number" bind:value={deporte} min="0">
+
+  <label>👨‍👩‍👧‍👦 Familia</label>
+  <input type="number" bind:value={familia} min="0">
+
+  <label>📚 Estudiar</label>
+  <input type="number" bind:value={estudiar} min="0">
+
+  <label>✨ Otra</label>
+  <input type="number" bind:value={otra} min="0">
+
+  <button on:click={agregarGasto}>Agregar a la tabla</button>
+  <button class="borrar" on:click={borrarDatos}>Borrar todos los datos</button>
 </div>
 
 <div class="tabla">
+  <h2>Gastos de los participantes</h2>
   <table>
     <thead>
       <tr>
@@ -130,17 +136,17 @@
         <th>Edad</th>
         <th>Género</th>
         <th>Vive solo</th>
-        <th>Gasto visual</th>
+        <th>Distribución visual de gastos</th>
       </tr>
     </thead>
     <tbody>
-      {#each gastos as gasto}
+      {#each datos as d}
         <tr>
-          <td style={getNombreStyle(gasto.nombre)}>{gasto.nombre}</td>
-          <td style={getEdadStyle(gasto.edad)}>{gasto.edad}</td>
-          <td style={getGeneroStyle(gasto.genero)}>{gasto.genero}</td>
-          <td style={getViveSoloStyle(gasto.viveSolo)}>{gasto.viveSolo}</td>
-          <td>{gasto.gastoVisual}</td>
+          <td class={`tipografia ${d.genero === 'Hombre' ? 'genero-hombre' : d.genero === 'Mujer' ? 'genero-mujer' : ''}`}>{d.nombre}</td>
+          <td class={d.edad >= 18 ? 'mayor' : ''}>{d.edad}</td>
+          <td class={d.genero === 'Hombre' ? 'genero-hombre' : d.genero === 'Mujer' ? 'genero-mujer' : ''}>{d.genero}</td>
+          <td class={d.viveSolo === 'Sí' ? 'vive-solo' : 'vive-no'}>{d.viveSolo}</td>
+          <td>{d.gastoVisual}</td>
         </tr>
       {/each}
     </tbody>
