@@ -1,49 +1,96 @@
-/* Estilos generales */
-.titulo {
-  font-size: 2rem;
-  text-align: center;
-  margin: 1rem 0;
+/* Reset y estilo base */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+body {
+  background-color: #f0f2f5;
+  color: #333;
+  line-height: 1.6;
+  padding: 2rem;
+}
+
+/* Título principal */
+.titulo {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+/* Sección de categorías */
 .categorias {
   text-align: center;
+  margin-bottom: 2rem;
+}
+
+.categorias h2 {
+  font-size: 1.5rem;
   margin-bottom: 1rem;
+  color: #34495e;
 }
 
 .categorias span {
   display: inline-block;
-  margin: 0.25rem 1rem;
+  margin: 0.5rem 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #ffffff;
+  border: 1px solid #dcdde1;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+  color: #2c3e50;
 }
 
 /* Formulario */
 .formulario {
   max-width: 600px;
-  margin: auto;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .formulario h2 {
+  font-size: 1.75rem;
   margin-bottom: 1rem;
+  color: #34495e;
+  text-align: center;
 }
 
 .formulario label {
   display: block;
   margin-top: 1rem;
-  font-weight: bold;
+  font-weight: 600;
+  color: #2c3e50;
 }
 
 .formulario input[type="text"],
 .formulario input[type="number"],
 .formulario select {
   width: 100%;
-  padding: 0.5rem;
-  margin-top: 0.25rem;
-  box-sizing: border-box;
-  border: 1px solid #ccc;
-  border-radius: 0.25rem;
+  padding: 0.75rem;
+  margin-top: 0.5rem;
+  border: 1px solid #dcdde1;
+  border-radius: 0.5rem;
+  transition: border-color 0.2s ease;
+}
+
+.formulario input[type="text"]:focus,
+.formulario input[type="number"]:focus,
+.formulario select:focus {
+  border-color: #3498db;
+  outline: none;
+}
+
+.formulario h3 {
+  margin-top: 2rem;
+  font-size: 1.25rem;
+  color: #34495e;
 }
 
 .formulario input[type="number"] {
@@ -56,44 +103,53 @@
   margin: 0;
 }
 
-.formulario h3 {
-  margin-top: 1.5rem;
-  font-size: 1.2rem;
-}
-
 /* Botones */
 button {
-  margin: 0.5rem 0.25rem;
-  padding: 0.5rem 1rem;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
   font-size: 1rem;
   cursor: pointer;
   border: none;
-  border-radius: 0.25rem;
-  background-color: #007acc;
+  border-radius: 0.5rem;
+  background-color: #3498db;
   color: white;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-block;
 }
 
 button:hover {
-  background-color: #005fa3;
+  background-color: #2980b9;
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
 }
 
 button.borrar {
-  background-color: #e53935;
+  background-color: #e74c3c;
+  margin-left: 1rem;
 }
 
 button.borrar:hover {
-  background-color: #c62828;
+  background-color: #c0392b;
 }
 
 /* Referencias */
 .referencias {
   max-width: 600px;
   margin: 2rem auto 1rem;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .referencias h2 {
-  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #34495e;
+  text-align: center;
 }
 
 .referencias ul {
@@ -103,17 +159,25 @@ button.borrar:hover {
 
 .referencias li {
   margin: 0.5rem 0;
+  font-size: 0.95rem;
+  color: #555;
 }
 
 /* Tabla de datos */
 .tabla {
   max-width: 800px;
   margin: 2rem auto;
+  background: #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .tabla h2 {
   text-align: center;
-  margin-bottom: 1rem;
+  margin: 1rem 0;
+  font-size: 1.5rem;
+  color: #34495e;
 }
 
 .tabla table {
@@ -123,19 +187,29 @@ button.borrar:hover {
 
 .tabla th,
 .tabla td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
+  padding: 0.75rem;
   text-align: center;
 }
 
 .tabla th {
-  background-color: #f0f0f0;
-  font-weight: bold;
+  background-color: #ecf0f1;
+  color: #2c3e50;
+  font-weight: 600;
+  border-bottom: 2px solid #bdc3c7;
+}
+
+.tabla td {
+  border-bottom: 1px solid #dcdde1;
+  color: #555;
+}
+
+.tabla tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
 /* Colores y estilos según género y si vive solo */
 .genero-hombre {
-  color: #1e90ff;
+  color: #2980b9;
 }
 
 .genero-mujer {
@@ -143,25 +217,31 @@ button.borrar:hover {
 }
 
 .vive-solo {
-  background-color: #c8e6c9;
+  background-color: #dff9fb;
+  border-radius: 0.25rem;
 }
 
 .vive-no {
-  background-color: #ffcdd2;
+  background-color: #fce4ec;
+  border-radius: 0.25rem;
 }
 
 .mayor {
   font-weight: bold;
+  color: #2c3e50;
 }
 
 /* Mono NFT personalizado */
 .mono-principal {
   text-align: center;
-  margin-top: 2rem;
+  margin: 3rem auto 2rem;
+  max-width: 600px;
 }
 
 .mono-principal h2 {
+  font-size: 1.75rem;
   margin-bottom: 1rem;
+  color: #34495e;
 }
 
 .mono-imagen {
@@ -171,10 +251,10 @@ button.borrar:hover {
 }
 
 .mono-img {
-  width: 220px;
+  width: 240px;
   height: auto;
   border-radius: 1rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Galería de monos */
@@ -182,28 +262,34 @@ button.borrar:hover {
   max-width: 1000px;
   margin: 2rem auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
   padding: 0 1rem;
 }
 
 .mono-galeria {
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   text-align: center;
-  background: #fafafa;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.mono-galeria:hover {
+  transform: translateY(-4px);
 }
 
 .mono-galeria img {
-  width: 160px;
+  width: 180px;
   height: auto;
   border-radius: 0.75rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  margin-bottom: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.75rem;
 }
 
 .mono-galeria p {
-  margin: 0.25rem 0 0;
-  font-size: 0.9rem;
+  margin: 0;
+  font-size: 1rem;
+  color: #2c3e50;
 }
