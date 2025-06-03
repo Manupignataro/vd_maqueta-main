@@ -247,7 +247,7 @@
     <div class="mono-galeria">
       <div class="mono-imagen">
         {#each obtenerCapas(d) as capa}
-          <img src="/mono_layers_example/base.png" alt="base" />
+          <img src="base.png" alt="mono">
         {/each}
       </div>
       <p><strong>{d.nombre}</strong><br />Mono {d.tipoMono}</p>
