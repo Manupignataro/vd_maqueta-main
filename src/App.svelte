@@ -76,13 +76,16 @@
 
   // Construye la ruta de la imagen del mono según edad, viveSolo, perfil
   function obtenerRutaImagen(d) {
-    const color = d.edad >= 18 ? "N" : "V";       // N = naranja (mayor de edad), V = violeta (menor)
-    const arito = d.viveSolo === "Sí" ? "A" : ""; // A = con arito, "" = sin arito
-    const gorro = d.edad >= 18 ? "G" : "";        // G = con gorro (solo mayores de edad)
-    const categoria = d.tipoMono;                 // Familiero, Amiguero, Romantico, Estudioso, Deportista
+  const color     = d.edad >= 18 ? "N" : "V";       // N = naranja, V = violeta
+  const arito     = d.viveSolo === "Sí" ? "A" : ""; // A = con arito, "" = sin arito
+  const gorro     = d.edad >= 18 ? "G" : "";        // G = con gorro, "" = sin gorro
+  const categoria = d.tipoMono;                     // “Amiguero”, “Familiero”, etc.
 
-    return `/src/visualizacion/imagenes/mono${color}${arito}${gorro}${categoria}.png`;
-  }
+  // AHORA PIDE TODO DESDE public/imagenes
+  // El slash inicial hace que el navegador busque en la carpeta “public/” de tu proyecto.
+  return `/imagenes/mono${color}${arito}${gorro}${categoria}.png`;
+}
+
 
   // Cuando el usuario hace clic en "Agregar a la tabla"
   function agregarGasto() {
