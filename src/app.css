@@ -1,7 +1,13 @@
+/* Estilos generales */
 .titulo {
   font-size: 2rem;
   text-align: center;
   margin: 1rem 0;
+}
+
+.categorias {
+  text-align: center;
+  margin-bottom: 1rem;
 }
 
 .categorias span {
@@ -9,36 +15,85 @@
   margin: 0.25rem 1rem;
 }
 
+/* Formulario */
 .formulario {
   max-width: 600px;
   margin: auto;
   padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.formulario h2 {
+  margin-bottom: 1rem;
 }
 
 .formulario label {
   display: block;
   margin-top: 1rem;
+  font-weight: bold;
 }
 
-.formulario input[type="number"],
 .formulario input[type="text"],
+.formulario input[type="number"],
 .formulario select {
   width: 100%;
   padding: 0.5rem;
   margin-top: 0.25rem;
   box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
 }
 
+.formulario input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.formulario input[type="number"]::-webkit-outer-spin-button,
+.formulario input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.formulario h3 {
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+}
+
+/* Botones */
 button {
-  margin: 0.5rem;
+  margin: 0.5rem 0.25rem;
   padding: 0.5rem 1rem;
   font-size: 1rem;
   cursor: pointer;
+  border: none;
+  border-radius: 0.25rem;
+  background-color: #007acc;
+  color: white;
+  transition: background-color 0.2s ease;
 }
 
-.borrar {
-  background-color: #f44336;
-  color: white;
+button:hover {
+  background-color: #005fa3;
+}
+
+button.borrar {
+  background-color: #e53935;
+}
+
+button.borrar:hover {
+  background-color: #c62828;
+}
+
+/* Referencias */
+.referencias {
+  max-width: 600px;
+  margin: 2rem auto 1rem;
+}
+
+.referencias h2 {
+  margin-bottom: 0.5rem;
 }
 
 .referencias ul {
@@ -50,10 +105,20 @@ button {
   margin: 0.5rem 0;
 }
 
+/* Tabla de datos */
+.tabla {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.tabla h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
 .tabla table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
 }
 
 .tabla th,
@@ -64,9 +129,11 @@ button {
 }
 
 .tabla th {
-  background-color: #f5f5f5;
+  background-color: #f0f0f0;
+  font-weight: bold;
 }
 
+/* Colores y estilos según género y si vive solo */
 .genero-hombre {
   color: #1e90ff;
 }
@@ -87,9 +154,14 @@ button {
   font-weight: bold;
 }
 
+/* Mono NFT personalizado */
 .mono-principal {
   text-align: center;
   margin-top: 2rem;
+}
+
+.mono-principal h2 {
+  margin-bottom: 1rem;
 }
 
 .mono-imagen {
@@ -105,15 +177,22 @@ button {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
+/* Galería de monos */
 .monos-galeria {
+  max-width: 1000px;
+  margin: 2rem auto;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 1rem;
-  padding: 2rem;
+  padding: 0 1rem;
 }
 
 .mono-galeria {
   text-align: center;
+  background: #fafafa;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .mono-galeria img {
@@ -121,4 +200,10 @@ button {
   height: auto;
   border-radius: 0.75rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  margin-bottom: 0.5rem;
+}
+
+.mono-galeria p {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
 }
