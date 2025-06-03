@@ -1,4 +1,5 @@
 <script>
+  import MonoViewer from './MonoViewer.svelte';
   import { onMount } from 'svelte';
 
   let nombre = "";
@@ -13,74 +14,60 @@
   let otra = 0;
 
   let datos = [];
-  let monedasGastadas = 0;
-  let perfil = "";
+  let ultimo = null;
+  let porcentajeMensaje = "";
 
-  const iconos = {
-    amigos: "🧑‍🤝‍🧑",
-    pareja: "❤️",
-    deporte: "🏃‍♂️",
-    familia: "👨‍👩‍👧‍👦",
-    estudiar: "📚",
-    otra: "✨"
-  };
-
-  const costos = {
-    amigos: 3,
-    pareja: 8,
-    deporte: 2,
-    familia: 5,
-    estudiar: 10,
-    otra: 6
-  };
+  const categorias = [
+    { clave: 'amigos', icono: '🧑‍🤝‍🧑', nombre: 'Amigos', costo: 3 },
+    { clave: 'pareja', icono: '❤️', nombre: 'Pareja', costo: 8 },
+    { clave: 'deporte', icono: '🏃‍♂️', nombre: 'Deporte', costo: 2 },
+    { clave: 'familia', icono: '👨‍👩‍👧‍👦', nombre: 'Familia', costo: 5 },
+    { clave: 'estudiar', icono: '📚', nombre: 'Estudiar', costo: 10 },
+    { clave: 'otra', icono: '✨', nombre: 'Otra', costo: 6 }
+  ];
 
   onMount(() => {
     const guardado = localStorage.getItem("gastos");
-    if (guardado) {
-      datos = JSON.parse(guardado);
-    }
+    if (guardado) datos = JSON.parse(guardado);
   });
 
-  $: monedasGastadas = amigos * 3 + pareja * 8 + deporte * 2 + familia * 5 + estudiar * 10 + otra * 6;
+  function calcularPorcentaje(gastos) {
+    const totalGastado = Object.entries(gastos).reduce((acc, [cat, cant]) => acc + cant * categorias.find(c => c.clave === cat).costo, 0);
+    const maxCategoria = Object.entries(gastos).reduce((a, b) => b[1] > a[1] ? b : a)[0];
+    const porcentaje = Math.round((gastos[maxCategoria] * categorias.find(c => c.clave === maxCategoria).costo) * 100 / totalGastado);
 
-  function calcularPerfil() {
-    const cantidades = {
-      familiero: familia * costos.familia,
-      amiguero: amigos * costos.amigos,
-      "pollera": pareja * costos.pareja,
-      estudioso: estudiar * costos.estudiar,
-      saludable: deporte * costos.deporte
-    };
+    let tipo = "";
+    if (maxCategoria === 'familia') tipo = "familiero";
+    else if (maxCategoria === 'amigos') tipo = "amiguero";
+    else if (maxCategoria === 'pareja') tipo = "enamorado";
+    else if (maxCategoria === 'deporte') tipo = "saludable";
+    else if (maxCategoria === 'estudiar') tipo = "estudioso";
+    else tipo = "curioso";
 
-    const mayor = Object.entries(cantidades).reduce((a, b) => a[1] > b[1] ? a : b);
-    const porcentaje = Math.round((mayor[1] / 45) * 100);
-
-    perfil = `Sos un/a ${mayor[0]} (${porcentaje}%).`;
+    return `Sos un ${tipo} en un ${porcentaje}%.`;
   }
 
   function agregarGasto() {
-    if (monedasGastadas !== 45) {
-      alert(`Debés gastar exactamente 45 monedas. Estás gastando ${monedasGastadas}.`);
+    const gastos = { amigos, pareja, deporte, familia, estudiar, otra };
+    const total = Object.entries(gastos).reduce((acc, [cat, cant]) => acc + cant * categorias.find(c => c.clave === cat).costo, 0);
+    if (total !== 45) {
+      alert(`Debés gastar exactamente 45 monedas. Estás gastando ${total}.`);
       return;
     }
 
-    calcularPerfil();
+    const categoriaMax = Object.entries(gastos).reduce((a, b) => b[1] > a[1] ? b : a)[0];
 
-    const cantidades = { amigos, pareja, deporte, familia, estudiar, otra };
-    let gastoVisual = "";
-    for (let key in cantidades) {
-      gastoVisual += iconos[key].repeat(cantidades[key]);
-    }
-
-    const nuevoDato = {
+    const nuevo = {
       nombre,
       edad: parseInt(edad),
       genero,
       viveSolo,
-      gastoVisual
+      categoria: categoriaMax
     };
 
-    datos = [...datos, nuevoDato];
+    datos = [...datos, nuevo];
+    ultimo = nuevo;
+    porcentajeMensaje = calcularPorcentaje(gastos);
     localStorage.setItem("gastos", JSON.stringify(datos));
 
     nombre = "";
@@ -88,126 +75,77 @@
     genero = "Hombre";
     viveSolo = "Sí";
     amigos = pareja = deporte = familia = estudiar = otra = 0;
-    perfil = "";
   }
 
   function borrarDatos() {
-    if (confirm("¿Estás seguro de que querés borrar todos los datos?")) {
-      localStorage.removeItem("gastos");
+    if (confirm("¿Borrar todos los datos?")) {
       datos = [];
+      localStorage.removeItem("gastos");
+      ultimo = null;
+      porcentajeMensaje = "";
     }
-  }
-
-  function simboloGenero(g) {
-    if (g === "Hombre") return "🚹";
-    if (g === "Mujer") return "🚺";
-    return "⚧️";
-  }
-
-  function simboloViveSolo(v) {
-    return v === "Sí" ? "✅" : "❌";
   }
 </script>
 
-<h1 style="text-align:center; color:#336699">¿En qué gastás tu fin de semana?</h1>
+<h1>¿En qué gastás tu fin de semana?</h1>
 
 <div class="categorias">
-  <h2 style="text-align:center;">Categorías disponibles (y su costo)</h2>
-  <span>🧑‍🤝‍🧑 Amigos - 3 monedas</span>
-  <span>❤️ Pareja - 8 monedas</span>
-  <span>🏃‍♂️ Deporte - 2 monedas</span>
-  <span>👨‍👩‍👧‍👦 Familia - 5 monedas</span>
-  <span>📚 Estudiar - 10 monedas</span>
-  <span>✨ Otra - 6 monedas</span>
+  <h2>Categorías disponibles (y su costo)</h2>
+  {#each categorias as c}
+    <span>{c.icono} {c.nombre} - {c.costo} monedas</span>
+  {/each}
 </div>
 
 <div class="formulario">
   <h2>Completá tu información</h2>
-
   <label>Nombre:</label>
-  <input bind:value={nombre} required>
+  <input bind:value={nombre}>
 
   <label>Edad:</label>
-  <input type="number" bind:value={edad} required>
+  <input type="number" bind:value={edad}>
 
   <label>Género:</label>
   <select bind:value={genero}>
-    <option value="Hombre">Hombre</option>
-    <option value="Mujer">Mujer</option>
-    <option value="Otro">Otro</option>
+    <option>Hombre</option>
+    <option>Mujer</option>
+    <option>Otro</option>
   </select>
 
   <label>¿Vivís solo/a?</label>
   <select bind:value={viveSolo}>
-    <option value="Sí">Sí</option>
-    <option value="No">No</option>
+    <option>Sí</option>
+    <option>No</option>
   </select>
 
   <h3>¿Cuántas veces gastarías en cada categoría?</h3>
-
-  <label>🧑‍🤝‍🧑 Amigos</label>
-  <input type="number" bind:value={amigos} min="0">
-
-  <label>❤️ Pareja</label>
-  <input type="number" bind:value={pareja} min="0">
-
-  <label>🏃‍♂️ Deporte</label>
-  <input type="number" bind:value={deporte} min="0">
-
-  <label>👨‍👩‍👧‍👦 Familia</label>
-  <input type="number" bind:value={familia} min="0">
-
-  <label>📚 Estudiar</label>
-  <input type="number" bind:value={estudiar} min="0">
-
-  <label>✨ Otra</label>
-  <input type="number" bind:value={otra} min="0">
-
-  <p><strong>Total gastado:</strong> {monedasGastadas} / 45 monedas</p>
-
-  {#if perfil}
-    <p style="margin-top: 10px;"><strong>{perfil}</strong></p>
-  {/if}
+  {#each categorias as c}
+    <label>{c.icono} {c.nombre}</label>
+    <input type="number" bind:value={eval(c.clave)} min="0">
+  {/each}
 
   <button on:click={agregarGasto}>Agregar a la tabla</button>
-  <button class="borrar" on:click={borrarDatos}>Borrar todos los datos</button>
+  <button on:click={borrarDatos} class="borrar">Borrar datos</button>
 </div>
 
+{#if ultimo}
+  <h2>Tu mono personalizado</h2>
+  <MonoViewer {...ultimo} />
+  <p style="text-align:center; margin-top:10px">{porcentajeMensaje}</p>
+{/if}
+
 <div class="referencias">
-  <h2>📘 Referencias</h2>
+  <h3>Referencias:</h3>
   <ul>
-    <li>✅: Vive solo/a &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ❌: No vive solo/a</li>
-    <li>🚹: Hombre &nbsp;&nbsp; 🚺: Mujer &nbsp;&nbsp; ⚧️: Otro</li>
-    <li>🟥 Celda roja: Género masculino</li>
-    <li>🟪 Celda rosa: Género femenino</li>
-    <li><strong>Texto en negrita</strong>: Mayor de edad (18+)</li>
-    <li>🟩 Fondo verde: Vive solo/a</li>
-    <li>🟥 Fondo rosado: No vive solo/a</li>
+    <li><strong>✔</strong>: Vive solo | <strong>❌</strong>: No vive solo</li>
+    <li><strong>🟪 fondo violeta</strong>: Mujer | <strong>🟧 fondo naranja</strong>: Hombre</li>
+    <li><strong>Letra en negrita</strong>: Mayor de edad | <strong>Letra normal</strong>: Menor de edad</li>
+    <li><strong>Mono {categoria}</strong>: Atuendo según categoría más elegida</li>
   </ul>
 </div>
 
-<div class="tabla">
-  <h2>Gastos de los participantes</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Edad</th>
-        <th>Género</th>
-        <th>¿Vive solo/a?</th>
-        <th>Distribución visual de gastos</th>
-      </tr>
-    </thead>
-    <tbody>
-      {#each datos as d}
-        <tr>
-          <td class={`tipografia ${d.genero === 'Hombre' ? 'genero-hombre' : d.genero === 'Mujer' ? 'genero-mujer' : ''}`}>{d.nombre}</td>
-          <td class={d.edad >= 18 ? 'mayor' : ''}>{d.edad}</td>
-          <td class={d.genero === 'Hombre' ? 'genero-hombre' : d.genero === 'Mujer' ? 'genero-mujer' : ''}>{simboloGenero(d.genero)}</td>
-          <td class={d.viveSolo === 'Sí' ? 'vive-solo' : 'vive-no'}>{simboloViveSolo(d.viveSolo)}</td>
-          <td>{d.gastoVisual}</td>
-        </tr>
-      {/each}
-    </tbody>
-  </table>
+<h2>Monos de otros usuarios</h2>
+<div class="galeria">
+  {#each datos.filter(d => d !== ultimo) as d}
+    <MonoViewer {...d} />
+  {/each}
 </div>
