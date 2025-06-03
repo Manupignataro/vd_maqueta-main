@@ -235,7 +235,7 @@
   {#if datos.length > 0}
     <div class="mono-imagen">
       {#each obtenerCapas(datos[datos.length - 1]) as capa}
-        <img src={mono_layers_example} alt="capa" />
+        <img src="/mono_layers_example/base.png" alt="base" />
       {/each}
     </div>
     <p><strong>{datos[datos.length - 1].nombre}</strong> - Mono {datos[datos.length - 1].tipoMono}</p>
@@ -247,7 +247,7 @@
     <div class="mono-galeria">
       <div class="mono-imagen">
         {#each obtenerCapas(d) as capa}
-          <img src={mono_layers_example} alt="capa" />
+          <img src="/mono_layers_example/base.png" alt="base" />
         {/each}
       </div>
       <p><strong>{d.nombre}</strong><br />Mono {d.tipoMono}</p>
