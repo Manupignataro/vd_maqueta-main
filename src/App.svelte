@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import fotos from "./mono_layers_example/atuendo/estudioso.png";
 
   let nombre = "";
   let edad = "";
@@ -247,7 +248,7 @@
     <div class="mono-galeria">
       <div class="mono-imagen">
         {#each obtenerCapas(d) as capa}
-          <img src="C:\Users\manu2\Desktop\mono_layers_example/base" alt="mono">
+          <img src="./mono_layers_example/atuendo/estudioso.png" alt="mono">
         {/each}
       </div>
       <p><strong>{d.nombre}</strong><br />Mono {d.tipoMono}</p>
