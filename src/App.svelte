@@ -56,6 +56,7 @@
     const porcentaje = Math.round((mayor[1] / 45) * 100);
 
     perfil = `Sos un/a ${mayor[0]} (${porcentaje}%).`;
+    return mayor[0];
   }
 
   function agregarGasto() {
@@ -64,7 +65,7 @@
       return;
     }
 
-    calcularPerfil();
+    const tipoMono = calcularPerfil();
 
     const cantidades = { amigos, pareja, deporte, familia, estudiar, otra };
     let gastoVisual = "";
@@ -78,7 +79,8 @@
       genero,
       viveSolo,
       gastoVisual,
-      perfil
+      perfil,
+      tipoMono
     };
 
     datos = [...datos, nuevoDato];
@@ -108,6 +110,19 @@
   function simboloViveSolo(v) {
     return v === "Sí" ? "✅" : "❌";
   }
+
+  function obtenerCapas(d) {
+    const capas = [
+      `/monos/fondo-${d.genero.toLowerCase()}.png`,
+      "/monos/base.png"
+    ];
+
+    if (d.viveSolo === "Sí") capas.push("/monos/arito.png");
+    if (d.edad >= 18) capas.push(`/monos/sombrero-${d.tipoMono}.png`);
+    capas.push(`/monos/atuendo-${d.tipoMono}.png`);
+
+    return capas;
+  }
 </script>
 
 <h1 class="titulo">¿En qué gastás tu fin de semana?</h1>
@@ -124,7 +139,6 @@
 
 <div class="formulario">
   <h2>Completá tu información</h2>
-
   <label>Nombre:</label>
   <input bind:value={nombre} required>
 
@@ -204,4 +218,29 @@
       {/each}
     </tbody>
   </table>
+</div>
+
+<div class="mono-principal">
+  <h2>Tu mono NFT personalizado</h2>
+  {#if datos.length > 0}
+    <div class="mono-imagen">
+      {#each obtenerCapas(datos[datos.length - 1]) as capa}
+        <img src={capa} alt="capa" />
+      {/each}
+    </div>
+    <p><strong>{datos[datos.length - 1].nombre}</strong> - Mono {datos[datos.length - 1].tipoMono}</p>
+  {/if}
+</div>
+
+<div class="monos-galeria">
+  {#each datos.slice(0, -1) as d}
+    <div class="mono-galeria">
+      <div class="mono-imagen">
+        {#each obtenerCapas(d) as capa}
+          <img src={capa} alt="capa" />
+        {/each}
+      </div>
+      <p><strong>{d.nombre}</strong><br />Mono {d.tipoMono}</p>
+    </div>
+  {/each}
 </div>
