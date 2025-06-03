@@ -41,20 +41,24 @@
     }
   });
 
-  $: monedasGastadas = amigos * 3 + pareja * 8 + deporte * 2 + familia * 5 + estudiar * 10 + otra * 6;
+  $: monedasGastadas =
+    amigos * costos.amigos +
+    pareja * costos.pareja +
+    deporte * costos.deporte +
+    familia * costos.familia +
+    estudiar * costos.estudiar +
+    otra * costos.otra;
 
   function calcularPerfil() {
     const cantidades = {
       familiero: familia * costos.familia,
       amiguero: amigos * costos.amigos,
-      "pollera": pareja * costos.pareja,
+      pollera: pareja * costos.pareja,
       estudioso: estudiar * costos.estudiar,
       saludable: deporte * costos.deporte
     };
-
-    const mayor = Object.entries(cantidades).reduce((a, b) => a[1] > b[1] ? a : b);
+    const mayor = Object.entries(cantidades).reduce((a, b) => (a[1] > b[1] ? a : b));
     const porcentaje = Math.round((mayor[1] / 45) * 100);
-
     perfil = `Sos un/a ${mayor[0]} (${porcentaje}%).`;
     return mayor[0];
   }
@@ -66,9 +70,8 @@
     }
 
     const tipoMono = calcularPerfil();
-
-    const cantidades = { amigos, pareja, deporte, familia, estudiar, otra };
     let gastoVisual = "";
+    const cantidades = { amigos, pareja, deporte, familia, estudiar, otra };
     for (let key in cantidades) {
       gastoVisual += iconos[key].repeat(cantidades[key]);
     }
@@ -80,7 +83,13 @@
       viveSolo,
       gastoVisual,
       perfil,
-      tipoMono
+      tipoMono,
+      amigos,
+      pareja,
+      deporte,
+      familia,
+      estudiar,
+      otra
     };
 
     datos = [...datos, nuevoDato];
@@ -102,8 +111,8 @@
   }
 
   function simboloGenero(g) {
-    if (g === "Hombre") return "🚩";
-    if (g === "Mujer") return "👩";
+    if (g === "Hombre") return "🚹";
+    if (g === "Mujer") return "🚺";
     return "⚧️";
   }
 
@@ -116,11 +125,9 @@
       `/monos/fondo-${d.genero.toLowerCase()}.png`,
       "/monos/base.png"
     ];
-
     if (d.viveSolo === "Sí") capas.push("/monos/arito.png");
     if (d.edad >= 18) capas.push(`/monos/sombrero-${d.tipoMono}.png`);
     capas.push(`/monos/atuendo-${d.tipoMono}.png`);
-
     return capas;
   }
 </script>
@@ -139,6 +146,7 @@
 
 <div class="formulario">
   <h2>Completá tu información</h2>
+
   <label>Nombre:</label>
   <input bind:value={nombre} required>
 
@@ -178,7 +186,9 @@
   <input type="number" bind:value={otra} min="0">
 
   <p><strong>Total gastado:</strong> {monedasGastadas} / 45 monedas</p>
-  {#if perfil}<p><strong>{perfil}</strong></p>{/if}
+  {#if perfil}
+    <p><strong>{perfil}</strong></p>
+  {/if}
 
   <button on:click={agregarGasto}>Agregar a la tabla</button>
   <button class="borrar" on:click={borrarDatos}>Borrar todos los datos</button>
