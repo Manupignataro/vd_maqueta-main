@@ -7,7 +7,7 @@
 }
 
 body {
-  background-color: #f0f2f5;
+  background: linear-gradient(135deg, #e8f0f2 0%, #f7fafc 100%);
   color: #333;
   line-height: 1.6;
   padding: 2rem;
@@ -15,29 +15,35 @@ body {
 
 /* Título principal */
 .titulo {
-  font-size: 2.5rem;
+  font-size: 3rem;
   text-align: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2rem;
   color: #2c3e50;
 }
 
 /* Sección de categorías */
 .categorias {
-  text-align: center;
-  margin-bottom: 2rem;
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  padding: 1rem;
+  background: #ffffff;
+  border: 2px solid #dcdde1;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .categorias h2 {
-  font-size: 1.5rem;
+  font-size: 2rem;
   margin-bottom: 1rem;
   color: #34495e;
+  text-align: center;
 }
 
 .categorias span {
   display: inline-block;
   margin: 0.5rem 1rem;
   padding: 0.5rem 1rem;
-  background-color: #ffffff;
+  background-color: #f0f4f7;
   border: 1px solid #dcdde1;
   border-radius: 0.5rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
@@ -52,7 +58,7 @@ body {
   padding: 1.5rem;
   background: #ffffff;
   border-radius: 0.75rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .formulario h2 {
@@ -83,7 +89,7 @@ body {
 .formulario input[type="text"]:focus,
 .formulario input[type="number"]:focus,
 .formulario select:focus {
-  border-color: #3498db;
+  border-color: #2980b9;
   outline: none;
 }
 
@@ -111,14 +117,14 @@ button {
   cursor: pointer;
   border: none;
   border-radius: 0.5rem;
-  background-color: #3498db;
+  background-color: #2980b9;
   color: white;
   transition: background-color 0.2s ease, transform 0.1s ease;
   display: inline-block;
 }
 
 button:hover {
-  background-color: #2980b9;
+  background-color: #1c6ea4;
   transform: translateY(-1px);
 }
 
@@ -127,26 +133,27 @@ button:active {
 }
 
 button.borrar {
-  background-color: #e74c3c;
+  background-color: #c0392b;
   margin-left: 1rem;
 }
 
 button.borrar:hover {
-  background-color: #c0392b;
+  background-color: #992d22;
 }
 
 /* Referencias */
 .referencias {
   max-width: 600px;
   margin: 2rem auto 1rem;
-  background: #ffffff;
   padding: 1rem;
-  border-radius: 0.5rem;
+  background: #ffffff;
+  border: 2px solid #dcdde1;
+  border-radius: 0.75rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .referencias h2 {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   margin-bottom: 0.75rem;
   color: #34495e;
   text-align: center;
@@ -161,6 +168,9 @@ button.borrar:hover {
   margin: 0.5rem 0;
   font-size: 0.95rem;
   color: #555;
+  padding: 0.5rem;
+  background-color: #f0f4f7;
+  border-radius: 0.5rem;
 }
 
 /* Tabla de datos */
@@ -168,15 +178,16 @@ button.borrar:hover {
   max-width: 800px;
   margin: 2rem auto;
   background: #ffffff;
+  border: 2px solid #dcdde1;
   border-radius: 0.75rem;
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .tabla h2 {
   text-align: center;
   margin: 1rem 0;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   color: #34495e;
 }
 
@@ -209,21 +220,25 @@ button.borrar:hover {
 
 /* Colores y estilos según género y si vive solo */
 .genero-hombre {
-  color: #2980b9;
+  color: #1b4f72;
+  font-weight: 600;
 }
 
 .genero-mujer {
-  color: #e91e63;
+  color: #c0392b;
+  font-weight: 600;
 }
 
 .vive-solo {
-  background-color: #dff9fb;
+  background-color: #d1f2eb;
   border-radius: 0.25rem;
+  padding: 0.25rem;
 }
 
 .vive-no {
-  background-color: #fce4ec;
+  background-color: #fadbd8;
   border-radius: 0.25rem;
+  padding: 0.25rem;
 }
 
 .mayor {
@@ -239,7 +254,7 @@ button.borrar:hover {
 }
 
 .mono-principal h2 {
-  font-size: 1.75rem;
+  font-size: 2rem;
   margin-bottom: 1rem;
   color: #34495e;
 }
