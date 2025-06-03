@@ -17,18 +17,28 @@
   let perfil = "";
 
   const iconos = {
-    amigos: "🧑‍🤝‍🧑", pareja: "❤️", deporte: "🏃‍♂️",
-    familia: "👨‍👩‍👧‍👦", estudiar: "📚", otra: "✨"
+    amigos: "🧑‍🧑",
+    pareja: "❤️",
+    deporte: "🏃‍♂️",
+    familia: "👨‍👩‍👦",
+    estudiar: "📚",
+    otra: "✨"
   };
 
   const costos = {
-    amigos: 3, pareja: 8, deporte: 2,
-    familia: 5, estudiar: 10, otra: 6
+    amigos: 3,
+    pareja: 8,
+    deporte: 2,
+    familia: 5,
+    estudiar: 10,
+    otra: 6
   };
 
   onMount(() => {
     const guardado = localStorage.getItem("gastos");
-    if (guardado) datos = JSON.parse(guardado);
+    if (guardado) {
+      datos = JSON.parse(guardado);
+    }
   });
 
   $: monedasGastadas = amigos * 3 + pareja * 8 + deporte * 2 + familia * 5 + estudiar * 10 + otra * 6;
@@ -37,14 +47,15 @@
     const cantidades = {
       familiero: familia * costos.familia,
       amiguero: amigos * costos.amigos,
-      pollera: pareja * costos.pareja,
+      "pollera": pareja * costos.pareja,
       estudioso: estudiar * costos.estudiar,
       saludable: deporte * costos.deporte
     };
+
     const mayor = Object.entries(cantidades).reduce((a, b) => a[1] > b[1] ? a : b);
     const porcentaje = Math.round((mayor[1] / 45) * 100);
+
     perfil = `Sos un/a ${mayor[0]} (${porcentaje}%).`;
-    return mayor[0];
   }
 
   function agregarGasto() {
@@ -53,10 +64,13 @@
       return;
     }
 
-    const tipoMono = calcularPerfil();
+    calcularPerfil();
+
     const cantidades = { amigos, pareja, deporte, familia, estudiar, otra };
     let gastoVisual = "";
-    for (let key in cantidades) gastoVisual += iconos[key].repeat(cantidades[key]);
+    for (let key in cantidades) {
+      gastoVisual += iconos[key].repeat(cantidades[key]);
+    }
 
     const nuevoDato = {
       nombre,
@@ -64,7 +78,7 @@
       genero,
       viveSolo,
       gastoVisual,
-      tipoMono
+      perfil
     };
 
     datos = [...datos, nuevoDato];
@@ -86,31 +100,20 @@
   }
 
   function simboloGenero(g) {
-    if (g === "Hombre") return "🚹";
-    if (g === "Mujer") return "🚺";
+    if (g === "Hombre") return "🚩";
+    if (g === "Mujer") return "👩";
     return "⚧️";
   }
 
   function simboloViveSolo(v) {
     return v === "Sí" ? "✅" : "❌";
   }
-
-  function rutaImagen(dato, capa) {
-    const base = `/imgs/${capa}/`;
-
-    if (capa === 'fondo') return base + (dato.genero === 'Hombre' ? 'hombre.png' : 'mujer.png');
-    if (capa === 'arito') return dato.viveSolo === 'Sí' ? base + 'arito.png' : '';
-    if (capa === 'sombrero') return dato.edad >= 18 ? base + 'sombrero.png' : '';
-    if (capa === 'atuendo') return base + dato.tipoMono + '.png';
-    return '';
-  }
-
 </script>
 
-<h1 style="text-align:center; color:#336699">¿En qué gastás tu fin de semana?</h1>
+<h1 class="titulo">¿En qué gastás tu fin de semana?</h1>
 
 <div class="categorias">
-  <h2 style="text-align:center;">Categorías disponibles (y su costo)</h2>
+  <h2>Categorías disponibles (y su costo)</h2>
   <span>🧑‍🤝‍🧑 Amigos - 3 monedas</span>
   <span>❤️ Pareja - 8 monedas</span>
   <span>🏃‍♂️ Deporte - 2 monedas</span>
@@ -124,14 +127,17 @@
 
   <label>Nombre:</label>
   <input bind:value={nombre} required>
+
   <label>Edad:</label>
   <input type="number" bind:value={edad} required>
+
   <label>Género:</label>
   <select bind:value={genero}>
     <option value="Hombre">Hombre</option>
     <option value="Mujer">Mujer</option>
     <option value="Otro">Otro</option>
   </select>
+
   <label>¿Vivís solo/a?</label>
   <select bind:value={viveSolo}>
     <option value="Sí">Sí</option>
@@ -139,37 +145,38 @@
   </select>
 
   <h3>¿Cuántas veces gastarías en cada categoría?</h3>
-
   <label>🧑‍🤝‍🧑 Amigos</label>
   <input type="number" bind:value={amigos} min="0">
+
   <label>❤️ Pareja</label>
   <input type="number" bind:value={pareja} min="0">
+
   <label>🏃‍♂️ Deporte</label>
   <input type="number" bind:value={deporte} min="0">
+
   <label>👨‍👩‍👧‍👦 Familia</label>
   <input type="number" bind:value={familia} min="0">
+
   <label>📚 Estudiar</label>
   <input type="number" bind:value={estudiar} min="0">
+
   <label>✨ Otra</label>
   <input type="number" bind:value={otra} min="0">
 
   <p><strong>Total gastado:</strong> {monedasGastadas} / 45 monedas</p>
-  {#if perfil}
-    <p><strong>{perfil}</strong></p>
-  {/if}
+  {#if perfil}<p><strong>{perfil}</strong></p>{/if}
 
-  <button on:click={agregarGasto}>Que personaje soy?</button>
+  <button on:click={agregarGasto}>Agregar a la tabla</button>
   <button class="borrar" on:click={borrarDatos}>Borrar todos los datos</button>
 </div>
 
 <div class="referencias">
   <h2>📘 Referencias</h2>
   <ul>
-    <li>✅ Vive solo/a – ❌ No vive solo/a</li>
-    <li>🚹 Hombre – 🚺 Mujer – ⚧️ Otro</li>
-    <li><strong>Negrita</strong>: Mayor de edad</li>
-    <li>🟥 Fondo rojo: Hombre – 🟪 Fondo rosa: Mujer</li>
-    <li>🟩 Celda verde: Vive solo/a – 🟥 Rosada: No vive solo/a</li>
+    <li>✅: Vive solo/a &nbsp;&nbsp; ❌: No vive solo/a</li>
+    <li>🚹: Hombre &nbsp;&nbsp; 🚺: Mujer &nbsp;&nbsp; ⚧️: Otro</li>
+    <li><strong>Texto en negrita</strong>: Mayor de edad</li>
+    <li>🟩 Fondo verde: Vive solo/a &nbsp;&nbsp; 🟥 Fondo rosado: No vive solo/a</li>
   </ul>
 </div>
 
@@ -178,7 +185,11 @@
   <table>
     <thead>
       <tr>
-        <th>Nombre</th><th>Edad</th><th>Género</th><th>¿Vive solo?</th><th>Distribución visual</th>
+        <th>Nombre</th>
+        <th>Edad</th>
+        <th>Género</th>
+        <th>¿Vive solo/a?</th>
+        <th>Distribución visual de gastos</th>
       </tr>
     </thead>
     <tbody>
@@ -194,32 +205,3 @@
     </tbody>
   </table>
 </div>
-
-{#if datos.length > 0}
-  <div class="mono-principal">
-    <h2>Tu Mono Personalizado</h2>
-    <div class="mono-container">
-      <img class="capa" src={rutaImagen(datos[datos.length - 1], 'fondo')} alt="fondo" />
-      <img class="capa" src="/imgs/base.png" alt="base" />
-      {#if rutaImagen(datos[datos.length - 1], 'arito')}<img class="capa" src={rutaImagen(datos[datos.length - 1], 'arito')} alt="arito" />{/if}
-      {#if rutaImagen(datos[datos.length - 1], 'sombrero')}<img class="capa" src={rutaImagen(datos[datos.length - 1], 'sombrero')} alt="sombrero" />{/if}
-      <img class="capa" src={rutaImagen(datos[datos.length - 1], 'atuendo')} alt="atuendo" />
-    </div>
-    <p class="nombre">{datos[datos.length - 1].nombre}</p>
-    <p class="tipo">Mono {datos[datos.length - 1].tipoMono}</p>
-  </div>
-
-  <div class="galeria">
-    {#each datos.slice(0, -1) as d}
-      <div class="mono-container">
-        <img class="capa" src={rutaImagen(d, 'fondo')} alt="fondo" />
-        <img class="capa" src="/imgs/base.png" alt="base" />
-        {#if rutaImagen(d, 'arito')}<img class="capa" src={rutaImagen(d, 'arito')} alt="arito" />{/if}
-        {#if rutaImagen(d, 'sombrero')}<img class="capa" src={rutaImagen(d, 'sombrero')} alt="sombrero" />{/if}
-        <img class="capa" src={rutaImagen(d, 'atuendo')} alt="atuendo" />
-        <p class="nombre">{d.nombre}</p>
-        <p class="tipo">Mono {d.tipoMono}</p>
-      </div>
-    {/each}
-  </div>
-{/if}
