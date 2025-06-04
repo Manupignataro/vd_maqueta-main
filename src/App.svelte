@@ -2,7 +2,7 @@
 <script>
   import { onMount } from 'svelte';
 
-  // Datos del formulario
+  // ----- Datos del formulario -----
   let nombre = "";
   let edad = "";
   let genero = "Hombre";
@@ -14,7 +14,7 @@
   let estudiar = 0;
   let otra = 0;
 
-  // Array donde guardamos todas las entradas
+  // ----- Array donde guardamos todas las entradas -----
   let datos = [];
   let monedasGastadas = 0;
   let perfil = "";
@@ -40,8 +40,9 @@
   };
 
   // --------------------------------------------------------
-  // Función auxiliar que, dado un objeto d con d.familia, d.amigos, etc.,
-  // devuelve la categoría "tipoMono" con mayor gasto.
+  // 1) Función auxiliar que, dado un objeto 'd' con campos
+  //    d.familia, d.amigos, d.pareja, d.estudiar, d.deporte,
+  //    devuelve la categoría con mayor gasto.
   function tipoMonoPara(d) {
     const cantidades = {
       Familiero: d.familia * costos.familia,
@@ -50,16 +51,15 @@
       Estudioso: d.estudiar * costos.estudiar,
       Deportista: d.deporte * costos.deporte
     };
-    // Busca la clave cuya cantidad sea máxima
     const mayor = Object.entries(cantidades).reduce((a, b) => (a[1] > b[1] ? a : b));
-    return mayor[0]; // devolvemos, por ejemplo, "Amiguero"
+    return mayor[0]; // por ejemplo: "Amiguero"
   }
 
-  // Al montar el componente, cargamos datos de LocalStorage y recalculamos tipoMono
+  // 2) Al montar el componente, cargamos de LocalStorage y recalculamos tipoMono
   onMount(() => {
     const guardado = localStorage.getItem("gastos");
     if (guardado) {
-      // Parseamos el array y recalculamos tipoMono para cada elemento:
+      // Parseamos y aseguramos que cada registro tenga tipoMono asignado (para texto en tabla y mono principal)
       const arr = JSON.parse(guardado).map(d => {
         return {
           ...d,
@@ -71,7 +71,7 @@
   });
   // --------------------------------------------------------
 
-  // Recalcular el total gastado cada vez que cambien las cantidades
+  // Recalcular el total gastado cada vez que cambien los contadores
   $: monedasGastadas =
     amigos * costos.amigos +
     pareja * costos.pareja +
@@ -97,14 +97,15 @@
     return mayor[0];
   }
 
-  // Construye la ruta de la imagen del mono según edad, viveSolo y tipoMono
+  // Construye la ruta de la imagen del mono según edad, viveSolo y recalcula la categoría
+  // con tipoMonoPara(d), en lugar de usar d.tipoMono en la galería.
   function obtenerRutaImagen(d) {
-    const color     = d.edad >= 18 ? "N" : "V";       // N = naranja para mayor de edad, V = violeta para menor
+    const color     = d.edad >= 18 ? "N" : "V";       // N = naranja para mayor, V = violeta para menor
     const arito     = d.viveSolo === "Sí" ? "A" : ""; // A = con arito, "" = sin arito
-    const gorro     = d.edad >= 18 ? "G" : "";        // G = con gorro (solo mayores), "" = sin gorro
-    const categoria = d.tipoMono;                     // "Amiguero", "Familiero", etc.
+    const gorro     = d.edad >= 18 ? "G" : "";        // G = con gorro (solo mayores)
+    const categoria = tipoMonoPara(d);                // recalculamos aquí
 
-    // Como las imágenes están en public/imagenes, la ruta debe empezar en /imagenes/
+    // Ruta absoluta en public/imagenes
     return `/imagenes/mono${color}${arito}${gorro}${categoria}.png`;
   }
 
@@ -133,7 +134,7 @@
       viveSolo,
       gastoVisual,
       perfil,
-      tipoMono,     // guardamos aquí el tipo de mono calculado
+      tipoMono,     // utilizamos esto para el texto en la tabla y el mono principal
       amigos,
       pareja,
       deporte,
@@ -270,7 +271,9 @@
     <tbody>
       {#each datos as d}
         <tr>
-          <td class={`tipografia ${d.genero === "Hombre" ? "genero-hombre" : d.genero === "Mujer" ? "genero-mujer" : ""}`}>
+          <td class={`tipografia 
+                      ${d.genero === "Hombre" ? "genero-hombre" : ""} 
+                      ${d.genero === "Mujer" ? "genero-mujer" : ""}`}>
             {d.nombre}
           </td>
           <td class={d.edad >= 18 ? "mayor" : ""}>{d.edad}</td>
@@ -299,8 +302,7 @@
       />
     </div>
     <p>
-      <strong>{datos[datos.length - 1].nombre}</strong> –
-      Mono {datos[datos.length - 1].tipoMono}
+      <strong>{datos[datos.length - 1].nombre}</strong> – Mono {datos[datos.length - 1].tipoMono}
     </p>
   {/if}
 </div>
@@ -309,8 +311,9 @@
 <div class="monos-galeria">
   {#each datos.slice(0, -1) as d}
     <div class="mono-galeria">
+      <!-- Aquí ya usamos obtenerRutaImagen(d), que recomputa el tipo -->
       <img src={obtenerRutaImagen(d)} alt="Mono NFT" class="mono-img" />
-      <p><strong>{d.nombre}</strong><br />Mono {d.tipoMono}</p>
+      <p><strong>{d.nombre}</strong><br />Mono {tipoMonoPara(d)}</p>
     </div>
   {/each}
 </div>
