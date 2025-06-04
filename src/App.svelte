@@ -39,13 +39,37 @@
     otra: 6
   };
 
-  // Al montar el componente, cargamos del LocalStorage (si existe)
+  // --------------------------------------------------------
+  // Función auxiliar que, dado un objeto d con d.familia, d.amigos, etc.,
+  // devuelve la categoría "tipoMono" con mayor gasto.
+  function tipoMonoPara(d) {
+    const cantidades = {
+      Familiero: d.familia * costos.familia,
+      Amiguero: d.amigos * costos.amigos,
+      Romantico: d.pareja * costos.pareja,
+      Estudioso: d.estudiar * costos.estudiar,
+      Deportista: d.deporte * costos.deporte
+    };
+    // Busca la clave cuya cantidad sea máxima
+    const mayor = Object.entries(cantidades).reduce((a, b) => (a[1] > b[1] ? a : b));
+    return mayor[0]; // devolvemos, por ejemplo, "Amiguero"
+  }
+
+  // Al montar el componente, cargamos datos de LocalStorage y recalculamos tipoMono
   onMount(() => {
     const guardado = localStorage.getItem("gastos");
     if (guardado) {
-      datos = JSON.parse(guardado);
+      // Parseamos el array y recalculamos tipoMono para cada elemento:
+      const arr = JSON.parse(guardado).map(d => {
+        return {
+          ...d,
+          tipoMono: tipoMonoPara(d)
+        };
+      });
+      datos = arr;
     }
   });
+  // --------------------------------------------------------
 
   // Recalcular el total gastado cada vez que cambien las cantidades
   $: monedasGastadas =
@@ -56,7 +80,7 @@
     estudiar * costos.estudiar +
     otra * costos.otra;
 
-  // Calcula qué perfil (categoría) es el que más gastó y arma el string "perfil"
+  // Calcula qué perfil (categoría) es el que más gastó, arma el string "perfil" y devuelve la categoría
   function calcularPerfil() {
     const cantidades = {
       Familiero: familia * costos.familia,
@@ -65,7 +89,6 @@
       Estudioso: estudiar * costos.estudiar,
       Deportista: deporte * costos.deporte
     };
-    // Encuentra la categoría con mayor gasto
     const mayor = Object.entries(cantidades).reduce((a, b) =>
       a[1] > b[1] ? a : b
     );
@@ -74,18 +97,16 @@
     return mayor[0];
   }
 
-  // Construye la ruta de la imagen del mono según edad, viveSolo, perfil
+  // Construye la ruta de la imagen del mono según edad, viveSolo y tipoMono
   function obtenerRutaImagen(d) {
-  const color     = d.edad >= 18 ? "N" : "V";       // N = naranja, V = violeta
-  const arito     = d.viveSolo === "Sí" ? "A" : ""; // A = con arito, "" = sin arito
-  const gorro     = d.edad >= 18 ? "G" : "";        // G = con gorro, "" = sin gorro
-  const categoria = d.tipoMono;                     // “Amiguero”, “Familiero”, etc.
+    const color     = d.edad >= 18 ? "N" : "V";       // N = naranja para mayor de edad, V = violeta para menor
+    const arito     = d.viveSolo === "Sí" ? "A" : ""; // A = con arito, "" = sin arito
+    const gorro     = d.edad >= 18 ? "G" : "";        // G = con gorro (solo mayores), "" = sin gorro
+    const categoria = d.tipoMono;                     // "Amiguero", "Familiero", etc.
 
-  // AHORA PIDE TODO DESDE public/imagenes
-  // El slash inicial hace que el navegador busque en la carpeta “public/” de tu proyecto.
-  return `/imagenes/mono${color}${arito}${gorro}${categoria}.png`;
-}
-
+    // Como las imágenes están en public/imagenes, la ruta debe empezar en /imagenes/
+    return `/imagenes/mono${color}${arito}${gorro}${categoria}.png`;
+  }
 
   // Cuando el usuario hace clic en "Agregar a la tabla"
   function agregarGasto() {
@@ -94,6 +115,7 @@
       return;
     }
 
+    // Calculamos la categoría/tipoMono de esta persona
     const tipoMono = calcularPerfil();
 
     // Arma la cadena visual de emojis
@@ -111,7 +133,7 @@
       viveSolo,
       gastoVisual,
       perfil,
-      tipoMono,
+      tipoMono,     // guardamos aquí el tipo de mono calculado
       amigos,
       pareja,
       deporte,
@@ -152,7 +174,7 @@
   }
 </script>
 
-<!-- Importamos el CSS completo: -->
+<!-- Importamos el CSS completo -->
 <style src="./visualizacion/estilos.css"></style>
 
 <!-- 1. Título -->
@@ -277,7 +299,8 @@
       />
     </div>
     <p>
-      <strong>{datos[datos.length - 1].nombre}</strong> – Mono {datos[datos.length - 1].tipoMono}
+      <strong>{datos[datos.length - 1].nombre}</strong> –
+      Mono {datos[datos.length - 1].tipoMono}
     </p>
   {/if}
 </div>
