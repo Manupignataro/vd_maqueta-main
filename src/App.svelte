@@ -240,7 +240,7 @@
     <p><strong>{perfil}</strong></p>
   {/if}
 
-  <button on:click={agregarGasto}>Agregar a la tabla</button>
+  <button on:click={agregarGasto}>Que personaje soy</button>
   <button class="borrar" on:click={borrarDatos}>Borrar todos los datos</button>
 </div>
 
